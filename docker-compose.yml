@@ -1,0 +1,92 @@
+version: '3'
+services:
+    nginx:
+        build:
+            dockerfile: nginx.dockerfile
+            context: .
+        image: zetermica/nginx
+        container_name: nginx
+        ports:
+            - "80:80"
+            - "3000:3000"
+        networks: 
+            - dummy-network
+        depends_on:
+            - "node1"
+            - "node2"
+            - "node3"
+
+    # elasticsearch:
+    #     build:
+    #         dockerfile: elasticsearch.dockerfile
+    #         context: .
+    #     image: zetermica/elasticsearch
+    #     container_name: elasticsearch
+    #     ports:
+    #         - "9200:9200"
+    #         - "9300:9300"
+    #     networks: 
+    #         - dummy-network
+
+    # kibana:
+    #     build:
+    #         dockerfile: kibana.dockerfile
+    #         context: .
+    #     image: zetermica/kibana
+    #     container_name: kibana
+    #     ports:
+    #         - "5601:5601"
+    #     networks: 
+    #         - dummy-network
+    #     depends_on:
+    #         - "elasticsearch"
+
+    node1:
+        build:
+            dockerfile: node-server.dockerfile
+            context: .
+        image: zetermica/node-server
+        container_name: node-server-1
+        ports:
+            - "3000"
+        networks: 
+            - dummy-network
+
+    node2:
+        build:
+            dockerfile: node-server.dockerfile
+            context: .
+        image: zetermica/node-server
+        container_name: node-server-2
+        ports:
+            - "3000"
+        networks: 
+            - dummy-network
+
+    node3:
+        build:
+            dockerfile: node-server.dockerfile
+            context: .
+        image: zetermica/node-server
+        container_name: node-server-3
+        ports:
+            - "3000"
+        networks: 
+            - dummy-network  
+
+    # filebeat:
+    #     image: "docker.elastic.co/beats/filebeat:7.10.2"
+    #     user: root
+    #     container_name: filebeat
+    #     volumes:
+    #         - /vagrant/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+    #         - /var/lib/docker:/var/lib/docker:ro
+    #         - /var/run/docker.sock:/var/run/docker.sock     
+    #     ports:
+    #         - "9200"
+    #     networks: 
+    #         - dummy-network                          
+
+networks: 
+    dummy-network:
+        driver: bridge
